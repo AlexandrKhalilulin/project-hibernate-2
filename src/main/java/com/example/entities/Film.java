@@ -31,7 +31,6 @@ public class Film {
 
     @ManyToOne
     @JoinColumn(name = "language_id")
-    @Column(nullable = false)
     private Language language;
 
     @ManyToOne

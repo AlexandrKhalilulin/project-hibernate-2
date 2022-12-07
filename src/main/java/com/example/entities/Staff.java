@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class Staff {
 
     @Id
-    @Column(name = "store_id",nullable = false)
+    @Column(name = "staff_id",nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Byte id;
 
