@@ -1,0 +1,1 @@
+1. table film_text should contain foreign key on the field film_id table film.
