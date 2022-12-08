@@ -1,4 +1,4 @@
-package com.example.factories;
+package com.example.dao;
 
 import com.example.dao.GenericDAO;
 import com.example.entities.Staff;
