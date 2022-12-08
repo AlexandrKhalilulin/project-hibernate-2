@@ -5,6 +5,8 @@ import com.example.entities.*;
 import com.example.factories.SessionFactory;
 import org.hibernate.Session;
 
+import java.time.LocalDateTime;
+
 public class ManagerDAO {
     private static ManagerDAO instance;
     private final org.hibernate.SessionFactory sessionFactory;
@@ -68,6 +70,25 @@ public class ManagerDAO {
             customerDAO.save(customer);
             session.getTransaction().commit();
             return customer;
+        }
+    }
+
+    public void customerReturnInventoryToStore(){
+        try(Session session = sessionFactory.getCurrentSession()){
+            session.beginTransaction();
+            Rental rental = rentalDAO.getAnyUnreturnedRental();
+            rental.setReturnDate(LocalDateTime.now());
+            rentalDAO.save(rental);
+            session.getTransaction().commit();
+        }
+    }
+
+    public void customerRentInventory(Customer customer){
+        try(Session session = sessionFactory.getCurrentSession()){
+            session.beginTransaction();
+            filmDAO.getFirstAvailableFilmForRent();
+
+            session.getTransaction().commit();
         }
     }
 
