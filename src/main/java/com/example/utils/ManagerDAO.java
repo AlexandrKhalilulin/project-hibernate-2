@@ -2,11 +2,17 @@ package com.example.utils;
 
 import com.example.dao.*;
 import com.example.entities.*;
+import com.example.enums.Feature;
+import com.example.enums.Rating;
 import com.example.factories.SessionFactory;
 import org.hibernate.Session;
+import org.hibernate.mapping.Set;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.Year;
+import java.util.HashSet;
+import java.util.List;
 
 public class ManagerDAO {
     private static ManagerDAO instance;
@@ -107,6 +113,49 @@ public class ManagerDAO {
             payment.setAmount(BigDecimal.valueOf(22.4));
             payment.setStaff(staff);
             paymentDAO.save(payment);
+            session.getTransaction().commit();
+        }
+    }
+
+    public void newFilmWasReleased(){
+        try(Session session = sessionFactory.getCurrentSession()){
+            session.beginTransaction();
+            Language language = languageDAO.getItems(0, 2).get(1);
+
+            List<Category> categories = categoryDAO.getItems(0, 3);
+
+            List<Actor> actors = actorDAO.getItems(0, 15);
+            HashSet<Actor> actorHashSet = new HashSet<>();
+            actorHashSet.addAll(actors);
+
+            Film film = new Film();
+            film.setActors(actorHashSet);
+            film.setRating(Rating.PG13);
+
+            HashSet<Feature> features = new HashSet<>();
+            features.add(Feature.BEHIND_THE_SCENES);
+            features.add(Feature.TRAILERS);
+
+            film.setSpecialFeatures(features);
+            film.setLength((short)34);
+            film.setRentalRate(BigDecimal.ZERO);
+            film.setReplacementCost(BigDecimal.TEN);
+            film.setLanguage(language);
+            film.setDescription("Adventure");
+            film.setTitle("Indiana Jones: Lost Ark");
+            film.setRentalDuration((byte)19);
+            film.setOriginalLanguage(language);
+            film.setCategories(new HashSet<>(categories));
+            film.setReleaseYear(Year.now());
+            filmDAO.save(film);
+
+            FilmText filmText = new FilmText();
+            filmText.setFilm(film);
+            filmText.setDescription("Adventure");
+            filmText.setTitle("Indiana Jones: Lost Ark");
+            filmText.setId(film.getId());
+            filmTextDAO.save(filmText);
+
             session.getTransaction().commit();
         }
     }
