@@ -49,9 +49,9 @@ public class ManagerDAO {
     }
 
     public Customer createCustomer(String firstName, String lastName, String currentAddress, String district, String phone, String currentCity){
-        try(Session session = sessionFactory.openSession()){
+        try(Session session = sessionFactory.getCurrentSession()){
             session.beginTransaction();
-            Store store = storeDAO.getById(0);
+            Store store = storeDAO.getItems(0, 1).get(0);
             City city = cityDAO.getByName(currentCity);
             Address address = new Address();
             address.setAddress(currentAddress);
