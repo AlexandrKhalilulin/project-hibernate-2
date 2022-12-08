@@ -5,6 +5,7 @@ import com.example.entities.*;
 import com.example.factories.SessionFactory;
 import org.hibernate.Session;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class ManagerDAO {
@@ -86,8 +87,26 @@ public class ManagerDAO {
     public void customerRentInventory(Customer customer){
         try(Session session = sessionFactory.getCurrentSession()){
             session.beginTransaction();
-            filmDAO.getFirstAvailableFilmForRent();
-
+            Film film = filmDAO.getFirstAvailableFilmForRent();
+            Inventory inventory = new Inventory();
+            inventory.setFilm(film);
+            Store store = storeDAO.getItems(0, 1).get(0);
+            inventory.setStore(store);
+            inventoryDAO.save(inventory);
+            Staff staff = store.getStaff();
+            Rental rental = new Rental();
+            rental.setCustomer(customer);
+            rental.setInventory(inventory);
+            rental.setRentalDate(LocalDateTime.now());
+            rental.setStaff(staff);
+            rentalDAO.save(rental);
+            Payment payment = new Payment();
+            payment.setRental(rental);
+            payment.setPaymentDate(LocalDateTime.now());
+            payment.setCustomer(customer);
+            payment.setAmount(BigDecimal.valueOf(22.4));
+            payment.setStaff(staff);
+            paymentDAO.save(payment);
             session.getTransaction().commit();
         }
     }
